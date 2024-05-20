@@ -16,7 +16,7 @@ func Init() error {
 	dbClient, err = InitializeDB()
 
 	if err != nil {
-		logger.Errorf("failed to initialize MongoDB: %v", err)
+		logger.Errorf("failed to initialize Firestore: %v", err)
 	}
 
 	authClient, err = InitializeFirebaseAuth()
