@@ -2,13 +2,11 @@ package models
 
 import (
 	"time"
-
-	"cloud.google.com/go/firestore"
 )
 
 type User struct {
-	Id              firestore.DocumentRef    `json:"id" firestore:"_id"`
-	Uid             string                   `json:"uid" firestore:"uid" validate:"required"`
+	Id              string                   `json:"id" firestore:"id" unique:"true"`
+	Uid             string                   `json:"uid" firestore:"uid" validate:"required" unique:"true"`
 	UserDisplayName string                   `json:"userDisplayName" firestore:"userDisplayName" validate:"required"`
 	UserEmail       string                   `json:"userEmail" firestore:"userEmail" validate:"required" unique:"true"`
 	UserPhotoUrl    string                   `json:"userPhotoUrl" firestore:"userPhotoUrl"`
