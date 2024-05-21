@@ -10,12 +10,6 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-var validate *validator.Validate
-
-func init() {
-	validate = validator.New()
-}
-
 func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -32,7 +26,7 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 	}
 
 	// Validate the user struct
-	if err := validate.Struct(user); err != nil {
+	if err := handler.validate.Struct(user); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		errorMessages := make(map[string]string)
 		for _, fieldError := range validationErrors {

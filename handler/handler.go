@@ -6,6 +6,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
 	"github.com/GinoCodeSpace/bridge/config"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 var dbClient *firestore.Client
@@ -20,12 +21,14 @@ func InitializeHandler() (*firestore.Client, *auth.Client) {
 type DefaultHandler struct {
 	collection *firestore.CollectionRef
 	ctx        context.Context
+	validate   *validator.Validate
 }
 
-func NewDefaultHandler(collection *firestore.CollectionRef, ctx context.Context) *DefaultHandler {
+func NewDefaultHandler(collection *firestore.CollectionRef, ctx context.Context, validate *validator.Validate) *DefaultHandler {
 	return &DefaultHandler{
 		collection: collection,
 		ctx:        ctx,
+		validate:   validate,
 	}
 }
 

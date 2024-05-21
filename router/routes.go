@@ -6,6 +6,7 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/handler"
 	"github.com/gin-contrib/cors"
+	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,11 +18,15 @@ func initializeRoutes(router *gin.Engine) {
 
 	var authHandler *handler.AuthHandler
 
+	var validate *validator.Validate
+
+	validate = validator.New()
+
 	userCollection := db.Collection("users")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
-	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
+	UserHandler := handler.NewDefaultHandler(userCollection, ctx, validate)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
