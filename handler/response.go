@@ -2,12 +2,17 @@ package handler
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func errParamIsRequired(name, typ string) error {
-	return fmt.Errorf("param: %s (type: %s) is required", name, typ)
+func errParamIsRequired(ctx *gin.Context, name, typ string) {
+	ctx.Header("Content-type", "application/json")
+	ctx.JSON(http.StatusBadRequest, ErrorResponse{
+		Message:   fmt.Sprintf("param: %s (type: %s) is required", name, typ),
+		ErrorCode: fmt.Sprintf("%d", http.StatusBadRequest),
+	})
 }
 
 func sendError(ctx *gin.Context, code int, msg string) {
