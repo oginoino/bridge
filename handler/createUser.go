@@ -32,8 +32,8 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+	user.CreatedAt = models.CustomTime{Time: time.Now()}
+	user.UpdatedAt = models.CustomTime{Time: time.Now()}
 	user.IsActivated = true
 	user.Id = user.Uid
 

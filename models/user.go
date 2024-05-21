@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 type User struct {
 	Id              string                   `json:"id" firestore:"id" unique:"true"`
 	Uid             string                   `json:"uid" firestore:"uid" validate:"required" unique:"true"`
@@ -11,8 +7,8 @@ type User struct {
 	UserEmail       string                   `json:"userEmail" firestore:"userEmail" validate:"required" unique:"true"`
 	UserPhotoUrl    string                   `json:"userPhotoUrl" firestore:"userPhotoUrl"`
 	UserName        string                   `json:"userName" firestore:"userName"`
-	CreatedAt       time.Time                `json:"createdAt" firestore:"createdAt"`
-	UpdatedAt       time.Time                `json:"updatedAt" firestore:"updatedAt"`
+	CreatedAt       CustomTime               `json:"createdAt" firestore:"createdAt"`
+	UpdatedAt       CustomTime               `json:"updatedAt" firestore:"updatedAt"`
 	UserProperties  []map[string]interface{} `json:"userProperties" firestore:"userProperties"`
 	IsActivated     bool                     `json:"isActivated" firestore:"isActivated"`
 	Addresses       []Address                `json:"addresses" firestore:"addresses"`

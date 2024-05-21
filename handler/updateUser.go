@@ -74,7 +74,7 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 	if (user.SelectedAddress != models.Address{}) {
 		existingUser.SelectedAddress = user.SelectedAddress
 	}
-	existingUser.UpdatedAt = time.Now()
+	existingUser.UpdatedAt = models.CustomTime{Time: time.Now()}
 
 	_, err = dbClient.Collection(collectionName).Doc(doc.Ref.ID).Set(ctx, existingUser)
 
