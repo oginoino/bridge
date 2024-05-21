@@ -6,12 +6,14 @@ require (
 	cloud.google.com/go/firestore v1.15.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/gin-gonic/gin v1.10.0
+	github.com/joho/godotenv v1.5.1
 	google.golang.org/api v0.181.0
+	gopkg.in/go-playground/validator.v9 v9.31.0
 )
 
 require (
 	github.com/kr/text v0.2.0 // indirect
-	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
 
 require (
