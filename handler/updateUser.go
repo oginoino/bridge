@@ -25,7 +25,6 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Validate the user struct
 	if err := handler.validate.Struct(user); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		errorMessages := make(map[string]string)
@@ -49,7 +48,6 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Use the first document found (there should be only one)
 	doc := docs[0]
 	doc.DataTo(&existingUser)
 
