@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"os"
 
 	"github.com/GinoCodeSpace/bridge/handler"
 	"github.com/gin-contrib/cors"
@@ -22,8 +23,13 @@ func initializeRoutes(router *gin.Engine) {
 
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	if allowedOrigins == "" {
+		allowedOrigins = "*"
+	}
+
 	corsConfig := cors.Config{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     []string{allowedOrigins},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Access-Control-Allow-Headers", "Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization", "Access-Control-Allow-Origin"},
 		AllowCredentials: true,
