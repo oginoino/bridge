@@ -24,8 +24,8 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 	}
 
 	user.UpdatedAt = time.Now()
+	user.Id = id
 
-	// Query the user document by id
 	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
