@@ -7,7 +7,14 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/go-playground/validator.v9"
 )
+
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New()
+}
 
 func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
@@ -23,8 +30,16 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	user.UpdatedAt = time.Now()
-	user.Id = id
+	// Validate the user struct
+	if err := validate.Struct(user); err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+		errorMessages := make(map[string]string)
+		for _, fieldError := range validationErrors {
+			errorMessages[fieldError.Field()] = fieldError.Tag()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"validationErrors": errorMessages})
+		return
+	}
 
 	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
@@ -41,6 +56,11 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	// Use the first document found (there should be only one)
 	doc := docs[0]
+
+	user.UpdatedAt = time.Now()
+	user.Id = id
+	user.Uid = id
+	user.CreatedAt = doc.Data()["createdAt"].(time.Time)
 
 	_, err = dbClient.Collection(collectionName).Doc(doc.Ref.ID).Set(ctx, user)
 
