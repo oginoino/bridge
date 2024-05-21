@@ -12,21 +12,25 @@ func InitializeFirebaseAuth() (*auth.Client, error) {
 	logger := GetLogger("FIREBASE AUTH")
 	logger.Info("Initializing Firebase Auth")
 
+	// Criar um contexto compartilhado
+	ctx := context.Background()
+
+	// Verificar se o arquivo de credenciais existe
 	opt := option.WithCredentialsFile("credentials.json")
 
-	app, err := firebase.NewApp(context.Background(), nil, opt)
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
-		logger.Errorf("Failed to initialize Firebase Auth: %v", err)
+		logger.Errorf("Failed to initialize Firebase App: %v", err)
 		return nil, err
 	}
 
-	client, err := app.Auth(context.Background())
+	client, err := app.Auth(ctx)
 	if err != nil {
-		logger.Errorf("Failed to initialize Firebase Auth: %v", err)
+		logger.Errorf("Failed to initialize Firebase Auth client: %v", err)
 		return nil, err
 	}
 
-	logger.Info("Initialized Firebase Auth")
+	logger.Info("Initialized Firebase Auth successfully")
 
 	return client, nil
 }

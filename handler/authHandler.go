@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,7 @@ func (handler *AuthHandler) AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("Usuário autenticado " + token.UID)
+		c.Set("token", token)
 
 		c.Next()
 	}

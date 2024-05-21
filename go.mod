@@ -9,6 +9,8 @@ require (
 	google.golang.org/api v0.181.0
 )
 
+require github.com/kr/text v0.2.0 // indirect
+
 require (
 	cloud.google.com/go v0.113.0 // indirect
 	cloud.google.com/go/auth v0.4.1 // indirect

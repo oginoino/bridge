@@ -1,6 +1,8 @@
 package router
 
 import (
+	"context"
+
 	"github.com/GinoCodeSpace/bridge/handler"
 	"github.com/gin-contrib/cors"
 
@@ -8,9 +10,17 @@ import (
 )
 
 func initializeRoutes(router *gin.Engine) {
-	// ctx := context.Background()
+	ctx := context.Background()
 
-	// db, authClient := handler.InitializeHandler()
+	db, authClient := handler.InitializeHandler()
+
+	var authHandler *handler.AuthHandler
+
+	userCollection := db.Collection("users")
+
+	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
+
+	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
 	corsConfig := cors.Config{
 		AllowOrigins:     []string{"*"},
@@ -23,13 +33,9 @@ func initializeRoutes(router *gin.Engine) {
 
 	authorized := router.Group("api/v1/")
 
-	var authHandler *handler.AuthHandler
-
 	authorized.Use(authHandler.AuthMiddleware())
 
-	// router.GET("/ping", handler.Ping)
-
 	{
-		authorized.GET("/ping", handler.Ping)
+		authorized.GET("/ping", UserHandler.Ping)
 	}
 }
