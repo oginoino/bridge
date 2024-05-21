@@ -13,7 +13,6 @@ type User struct {
 	UserName        string                   `json:"userName" firestore:"userName"`
 	CreatedAt       time.Time                `json:"createdAt" firestore:"createdAt"`
 	UpdatedAt       time.Time                `json:"updatedAt" firestore:"updatedAt"`
-	DeletedAt       time.Time                `json:"deletedAt" firestore:"deletedAt"`
 	UserProperties  []map[string]interface{} `json:"userProperties" firestore:"userProperties"`
 	IsActivated     bool                     `json:"isActivated" firestore:"isActivated"`
 	Addresses       []Address                `json:"addresses" firestore:"addresses"`
