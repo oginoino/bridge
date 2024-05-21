@@ -22,8 +22,10 @@ func InitializeDB() (*firestore.Client, error) {
 	}
 
 	client, err := app.Firestore(context.Background())
+
 	if err != nil {
 		logger.Error(err)
+		defer client.Close()
 		return nil, err
 	}
 
