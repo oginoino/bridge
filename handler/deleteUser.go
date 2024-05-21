@@ -4,10 +4,9 @@ import "github.com/gin-gonic/gin"
 
 func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
-	collectionName := "users"
 	ctx := c.Request.Context()
 
-	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
+	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
