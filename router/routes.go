@@ -18,9 +18,7 @@ func initializeRoutes(router *gin.Engine) {
 
 	var authHandler *handler.AuthHandler
 
-	var validate *validator.Validate
-
-	validate = validator.New()
+	var validate = validator.New()
 
 	userCollection := db.Collection("users")
 
@@ -51,7 +49,7 @@ func initializeRoutes(router *gin.Engine) {
 		authorized.POST("/users", UserHandler.CreateUser)
 		authorized.GET("/users/:id", UserHandler.GetUser)
 		authorized.PUT("/users/:id", UserHandler.UpdateUser)
-
+		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
 	}
 
 }
