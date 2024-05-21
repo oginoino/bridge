@@ -28,7 +28,6 @@ func (handler *DefaultHandler) GetUser(c *gin.Context) {
 		return
 	}
 
-	// Use the first document found (there should be only one)
 	doc := docs[0]
 	if err := doc.DataTo(&user); err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())
