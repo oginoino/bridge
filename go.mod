@@ -9,7 +9,10 @@ require (
 	google.golang.org/api v0.181.0
 )
 
-require github.com/kr/text v0.2.0 // indirect
+require (
+	github.com/kr/text v0.2.0 // indirect
+	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
+)
 
 require (
 	cloud.google.com/go v0.113.0 // indirect

@@ -7,6 +7,7 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 func (handler *DefaultHandler) CreateUser(c *gin.Context) {
@@ -20,23 +21,18 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if user.Uid == "" {
-		errParamIsRequired(c, "uid", "string")
+	if err := handler.validate.Struct(user); err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+		errorMessages := make(map[string]string)
+		for _, fieldError := range validationErrors {
+			errorMessages[fieldError.Field()] = fieldError.Tag()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"validationErrors": errorMessages})
 		return
 	}
 
-	if user.UserDisplayName == "" {
-		errParamIsRequired(c, "userDisplayName", "string")
-		return
-	}
-
-	if user.UserEmail == "" {
-		errParamIsRequired(c, "userEmail", "string")
-		return
-	}
-
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+	user.CreatedAt = models.CustomTime{Time: time.Now()}
+	user.UpdatedAt = models.CustomTime{Time: time.Now()}
 	user.IsActivated = true
 	user.Id = user.Uid
 

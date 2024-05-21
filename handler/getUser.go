@@ -11,25 +11,28 @@ import (
 func (handler *DefaultHandler) GetUser(c *gin.Context) {
 	id := c.Param("id")
 	collectionName := "users"
-	var user = models.User{}
+	var user models.User
 
 	ctx := context.Background()
 
 	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
-	snapshot, err := query.Documents(ctx).Next()
+	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if !snapshot.Exists() {
+	if len(docs) == 0 {
 		sendError(c, http.StatusNotFound, "User not found")
 		return
 	}
 
-	snapshot.DataTo(&user)
+	doc := docs[0]
+	if err := doc.DataTo(&user); err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	c.JSON(http.StatusOK, user)
-
 }

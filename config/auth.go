@@ -12,10 +12,8 @@ func InitializeFirebaseAuth() (*auth.Client, error) {
 	logger := GetLogger("FIREBASE AUTH")
 	logger.Info("Initializing Firebase Auth")
 
-	// Criar um contexto compartilhado
 	ctx := context.Background()
 
-	// Verificar se o arquivo de credenciais existe
 	opt := option.WithCredentialsFile("credentials.json")
 
 	app, err := firebase.NewApp(ctx, nil, opt)
