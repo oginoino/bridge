@@ -44,5 +44,8 @@ func initializeRoutes(router *gin.Engine) {
 	{
 		authorized.GET("/ping", UserHandler.Ping)
 		authorized.POST("/users", UserHandler.CreateUser)
+		authorized.GET("/users/:id", UserHandler.GetUser)
+
 	}
+
 }
