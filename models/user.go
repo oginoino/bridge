@@ -6,7 +6,7 @@ type User struct {
 	UserDisplayName string                   `json:"userDisplayName" firestore:"userDisplayName" validate:"required"`
 	UserEmail       string                   `json:"userEmail" firestore:"userEmail" validate:"required" unique:"true"`
 	UserPhotoUrl    string                   `json:"userPhotoUrl" firestore:"userPhotoUrl"`
-	UserName        string                   `json:"userName" firestore:"userName"`
+	UserName        string                   `json:"userName" firestore:"userName" unique:"true"`
 	CreatedAt       CustomTime               `json:"createdAt" firestore:"createdAt"`
 	UpdatedAt       CustomTime               `json:"updatedAt" firestore:"updatedAt"`
 	UserProperties  []map[string]interface{} `json:"userProperties" firestore:"userProperties"`
