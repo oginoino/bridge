@@ -13,16 +13,13 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 
 	var user models.User
 
-	// Create a Firestore context
 	ctx := context.Background()
 
-	// Bind the request body to the user struct
 	if err := c.ShouldBindJSON(&user); err != nil {
 		sendError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// Check required fields
 	if user.Uid == "" {
 		errParamIsRequired(c, "uid", "string")
 		return
@@ -38,13 +35,11 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// Set timestamps and default values
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	user.IsActivated = true
 	user.Id = user.Uid
 
-	// Check if the user already exists
 	_, err := dbClient.Collection("users").Select("uid").Where("uid", "==", user.Uid).Documents(ctx).Next()
 
 	if err == nil {
@@ -52,7 +47,6 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// Add the user to Firestore
 	_, _, err = dbClient.Collection("users").Add(ctx, user)
 
 	if err != nil {

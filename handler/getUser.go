@@ -13,7 +13,6 @@ func (handler *DefaultHandler) GetUser(c *gin.Context) {
 	collectionName := "users"
 	var user = models.User{}
 
-	// ...
 	ctx := context.Background()
 
 	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
