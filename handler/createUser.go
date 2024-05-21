@@ -21,7 +21,6 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// Validate the user struct
 	if err := handler.validate.Struct(user); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		errorMessages := make(map[string]string)
