@@ -13,7 +13,6 @@ import (
 func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	id := c.Param("id")
-	collectionName := "users"
 
 	var user models.User
 	var existingUser models.User
@@ -35,7 +34,7 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
+	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
@@ -74,7 +73,7 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 	}
 	existingUser.UpdatedAt = models.CustomTime{Time: time.Now()}
 
-	_, err = dbClient.Collection(collectionName).Doc(doc.Ref.ID).Set(ctx, existingUser)
+	_, err = dbClient.Collection(handler.collection.ID).Doc(doc.Ref.ID).Set(ctx, existingUser)
 
 	if err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())

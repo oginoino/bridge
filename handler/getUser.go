@@ -10,12 +10,11 @@ import (
 
 func (handler *DefaultHandler) GetUser(c *gin.Context) {
 	id := c.Param("id")
-	collectionName := "users"
 	var user models.User
 
 	ctx := context.Background()
 
-	query := dbClient.Collection(collectionName).Where("id", "==", id).Limit(1)
+	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {

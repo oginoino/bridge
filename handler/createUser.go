@@ -36,14 +36,14 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 	user.IsActivated = true
 	user.Id = user.Uid
 
-	_, err := dbClient.Collection("users").Select("uid").Where("uid", "==", user.Uid).Documents(ctx).Next()
+	_, err := dbClient.Collection(handler.collection.ID).Select("uid").Where("uid", "==", user.Uid).Documents(ctx).Next()
 
 	if err == nil {
 		sendError(c, http.StatusConflict, "user already exists")
 		return
 	}
 
-	_, _, err = dbClient.Collection("users").Add(ctx, user)
+	_, _, err = dbClient.Collection(handler.collection.ID).Add(ctx, user)
 
 	if err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())
