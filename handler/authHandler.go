@@ -11,7 +11,7 @@ func (handler *AuthHandler) AuthMiddleware() gin.HandlerFunc {
 		tokenValue := c.Request.Header.Get("Authorization")
 
 		if tokenValue == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+			sendError(c, http.StatusUnauthorized, "Authorization header is missing")
 			return
 		}
 

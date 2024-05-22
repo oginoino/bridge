@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
@@ -10,12 +14,12 @@ func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		sendError(c, 500, err.Error()+" "+id)
 		return
 	}
 
 	if len(docs) == 0 {
-		c.JSON(404, gin.H{"error": "User not found"})
+		sendError(c, 404, "User not found")
 		return
 	}
 
@@ -23,10 +27,15 @@ func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 
 	_, err = doc.Ref.Delete(ctx)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		sendError(c, 500, err.Error()+" "+id)
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "User deleted successfully"})
+	sendSuccess(c, "User deleted", http.StatusOK, gin.H{
+		"id":      id,
+		"status":  "success",
+		"message": "User deleted",
+		"data":    nil,
+	})
 
 }

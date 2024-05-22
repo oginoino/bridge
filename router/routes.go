@@ -40,6 +40,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	router.Use(cors.New(corsConfig))
 
+	router.GET("/predictions", handler.GetPredictions)
+
 	authorized := router.Group("api/v1/")
 
 	authorized.Use(authHandler.AuthMiddleware())

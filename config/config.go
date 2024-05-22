@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/joho/godotenv"
+
 	firestore "cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
 )
@@ -12,6 +14,12 @@ var dbClient *firestore.Client
 func Init() error {
 	var err error
 	var logger *Logger
+
+	err = godotenv.Load()
+
+	if err != nil {
+		logger.Warn()
+	}
 
 	dbClient, err = InitializeDB()
 
