@@ -10,6 +10,13 @@ func (handler *DefaultHandler) DeleteAdmin(c *gin.Context) {
 	id := c.Param("id")
 	ctx := c.Request.Context()
 
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
+		return
+	}
+
 	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
