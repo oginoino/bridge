@@ -14,6 +14,13 @@ func (handler *DefaultHandler) GetAdmin(c *gin.Context) {
 
 	ctx := context.Background()
 
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
+		return
+	}
+
 	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()
 
