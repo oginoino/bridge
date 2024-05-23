@@ -14,9 +14,9 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 	ctx := context.Background()
 
 	uid, _ := c.Get("uid")
+	user.Uid = uid.(string)
 	user.UserDisplayName = c.GetString("name")
 	user.UserEmail = c.GetString("email")
-	user.Uid = uid.(string)
 	user.Id = user.Uid
 	user.CreatedAt = models.CustomTime{Time: time.Now()}
 	user.UpdatedAt = models.CustomTime{Time: time.Now()}

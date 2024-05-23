@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +9,14 @@ import (
 
 func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
-	ctx := c.Request.Context()
+	ctx := context.Background()
+
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
+		return
+	}
 
 	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
 	docs, err := query.Documents(ctx).GetAll()

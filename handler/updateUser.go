@@ -17,13 +17,15 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
 		return
 	}
 
-	if user.Uid == "" || user.UserDisplayName == "" || user.UserEmail == "" {
-		sendError(c, http.StatusBadRequest, "uid, userDisplayName, and userEmail are required fields")
+	if err := c.ShouldBindJSON(&user); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -42,6 +44,10 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	doc := docs[0]
 	doc.DataTo(&existingUser)
+
+	user.Uid = existingUser.Uid
+
+	user.Id = existingUser.Id
 
 	if user.UserDisplayName != "" {
 		existingUser.UserDisplayName = user.UserDisplayName
