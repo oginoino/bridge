@@ -2,6 +2,7 @@ package models
 
 type Product struct {
 	Id                      string   `json:"id" firestore:"id" unique:"true" validate:"required"`
+	ProductCode             string   `json:"productCode" firestore:"productCode" validate:"required"`
 	ProductName             string   `json:"productName" firestore:"productName" validate:"required"`
 	ProductPrice            float64  `json:"productPrice" firestore:"productPrice" validate:"required"`
 	ProductUnitOfMeasure    string   `json:"productUnitOfMeasure" firestore:"productUnitOfMeasure" validate:"required"`
@@ -12,4 +13,5 @@ type Product struct {
 	ProductImageSrc         string   `json:"productImageSrc" firestore:"productImageSrc"`
 	ProducKilogramsWeight   float64  `json:"producKilogramsWeight" firestore:"producKilogramsWeight"`
 	ProductCubicMeterVolume float64  `json:"productCubicMeterVolume" firestore:"productCubicMeterVolume"`
+	IsActivated             bool     `json:"isActivated" firestore:"isActivated"`
 }

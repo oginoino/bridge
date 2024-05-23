@@ -19,17 +19,25 @@ func initializeRoutes(router *gin.Engine) {
 
 	var adminHandler *handler.AuthHandler
 
+	var productHandler *handler.AuthHandler
+
 	userCollection := db.Collection("users")
 
 	adminCollection := db.Collection("admin")
+
+	productCollection := db.Collection("products")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
 	adminHandler = handler.NewAuthHandler(adminCollection, authClient, ctx)
 
+	productHandler = handler.NewAuthHandler(productCollection, authClient, ctx)
+
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
 	AdminHandler := handler.NewDefaultHandler(adminCollection, ctx)
+
+	ProductHandler := handler.NewDefaultHandler(productCollection, ctx)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
@@ -51,9 +59,13 @@ func initializeRoutes(router *gin.Engine) {
 
 	adminAuthorized := router.Group("api/v1/admin/")
 
+	productAuthorized := router.Group("api/v1/products/")
+
 	authorized.Use(authHandler.AuthMiddleware())
 
 	adminAuthorized.Use(adminHandler.AuthMiddleware())
+
+	productAuthorized.Use(productHandler.AuthMiddleware())
 
 	{
 		authorized.GET("/ping", UserHandler.Ping)
@@ -65,6 +77,7 @@ func initializeRoutes(router *gin.Engine) {
 		adminAuthorized.GET("/:id", AdminHandler.GetAdmin)
 		adminAuthorized.PUT("/:id", AdminHandler.UpdateAdmin)
 		adminAuthorized.DELETE("/:id", AdminHandler.DeleteAdmin)
+		productAuthorized.POST("/", ProductHandler.CreateProduct)
 	}
 
 }
