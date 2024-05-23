@@ -4,11 +4,14 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
 )
 
-func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
+func (handler *DefaultHandler) GetAdmin(c *gin.Context) {
 	id := c.Param("id")
+	var admin models.AdminUser
+
 	ctx := context.Background()
 
 	uid, _ := c.Get("uid")
@@ -22,28 +25,20 @@ func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
 	docs, err := query.Documents(ctx).GetAll()
 
 	if err != nil {
-		sendError(c, 500, err.Error()+" "+id)
+		sendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	if len(docs) == 0 {
-		sendError(c, 404, "User not found")
+		sendError(c, http.StatusNotFound, "User not found")
 		return
 	}
 
 	doc := docs[0]
-
-	_, err = doc.Ref.Delete(ctx)
-	if err != nil {
-		sendError(c, 500, err.Error()+" "+id)
+	if err := doc.DataTo(&admin); err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	sendSuccess(c, "User deleted", http.StatusOK, gin.H{
-		"id":      id,
-		"status":  "success",
-		"message": "User deleted",
-		"data":    nil,
-	})
-
+	c.JSON(http.StatusOK, admin)
 }

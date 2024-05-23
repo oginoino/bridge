@@ -7,11 +7,9 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
-
 	id := c.Param("id")
 
 	var user models.User
@@ -19,18 +17,15 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
 		return
 	}
 
-	if err := handler.validate.Struct(user); err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		errorMessages := make(map[string]string)
-		for _, fieldError := range validationErrors {
-			errorMessages[fieldError.Field()] = fieldError.Tag()
-		}
-		c.JSON(http.StatusBadRequest, gin.H{"validationErrors": errorMessages})
+	if err := c.ShouldBindJSON(&user); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -49,6 +44,10 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 
 	doc := docs[0]
 	doc.DataTo(&existingUser)
+
+	user.Uid = existingUser.Uid
+
+	user.Id = existingUser.Id
 
 	if user.UserDisplayName != "" {
 		existingUser.UserDisplayName = user.UserDisplayName

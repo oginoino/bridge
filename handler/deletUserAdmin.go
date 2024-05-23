@@ -1,15 +1,14 @@
 package handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (handler *DefaultHandler) DeleteUser(c *gin.Context) {
+func (handler *DefaultHandler) DeleteAdmin(c *gin.Context) {
 	id := c.Param("id")
-	ctx := context.Background()
+	ctx := c.Request.Context()
 
 	uid, _ := c.Get("uid")
 

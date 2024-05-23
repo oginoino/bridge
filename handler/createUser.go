@@ -7,36 +7,22 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 func (handler *DefaultHandler) CreateUser(c *gin.Context) {
-
 	var user models.User
-
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if err := handler.validate.Struct(user); err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		errorMessages := make(map[string]string)
-		for _, fieldError := range validationErrors {
-			errorMessages[fieldError.Field()] = fieldError.Tag()
-		}
-		c.JSON(http.StatusBadRequest, gin.H{"validationErrors": errorMessages})
-		return
-	}
-
+	uid, _ := c.Get("uid")
+	user.Uid = uid.(string)
+	user.UserDisplayName = c.GetString("name")
+	user.UserEmail = c.GetString("email")
+	user.Id = user.Uid
 	user.CreatedAt = models.CustomTime{Time: time.Now()}
 	user.UpdatedAt = models.CustomTime{Time: time.Now()}
 	user.IsActivated = true
-	user.Id = user.Uid
 
-	_, err := dbClient.Collection(handler.collection.ID).Select("uid").Where("uid", "==", user.Uid).Documents(ctx).Next()
+	_, err := dbClient.Collection(handler.collection.ID).Where("uid", "==", user.Uid).Documents(ctx).Next()
 
 	if err == nil {
 		sendError(c, http.StatusConflict, "user already exists")
