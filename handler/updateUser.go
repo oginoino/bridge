@@ -7,11 +7,9 @@ import (
 
 	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
-
 	id := c.Param("id")
 
 	var user models.User
@@ -24,13 +22,8 @@ func (handler *DefaultHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err := handler.validate.Struct(user); err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		errorMessages := make(map[string]string)
-		for _, fieldError := range validationErrors {
-			errorMessages[fieldError.Field()] = fieldError.Tag()
-		}
-		c.JSON(http.StatusBadRequest, gin.H{"validationErrors": errorMessages})
+	if user.Uid == "" || user.UserDisplayName == "" || user.UserEmail == "" {
+		sendError(c, http.StatusBadRequest, "uid, userDisplayName, and userEmail are required fields")
 		return
 	}
 
