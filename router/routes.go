@@ -62,6 +62,7 @@ func initializeRoutes(router *gin.Engine) {
 		authorized.PUT("/users/:id", UserHandler.UpdateUser)
 		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
 		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
+		adminAuthorized.GET("/:id", AdminHandler.GetAdmin)
 	}
 
 }
