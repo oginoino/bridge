@@ -28,6 +28,10 @@ func (handler *AuthHandler) AuthMiddleware() gin.HandlerFunc {
 
 		c.Set("uid", token.UID)
 
+		c.Set("email", token.Claims["email"])
+
+		c.Set("name", token.Claims["name"])
+
 		c.Next()
 	}
 }

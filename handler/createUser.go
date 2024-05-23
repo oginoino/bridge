@@ -13,17 +13,9 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 	var user models.User
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if user.UserDisplayName == "" || user.UserEmail == "" {
-		sendError(c, http.StatusBadRequest, "uid, userDisplayName, and userEmail are required fields")
-		return
-	}
-
 	uid, _ := c.Get("uid")
+	user.UserDisplayName = c.GetString("name")
+	user.UserEmail = c.GetString("email")
 	user.Uid = uid.(string)
 	user.Id = user.Uid
 	user.CreatedAt = models.CustomTime{Time: time.Now()}
