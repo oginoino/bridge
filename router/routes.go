@@ -17,11 +17,19 @@ func initializeRoutes(router *gin.Engine) {
 
 	var authHandler *handler.AuthHandler
 
+	var adminHandler *handler.AuthHandler
+
 	userCollection := db.Collection("users")
+
+	adminCollection := db.Collection("admin")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
+	adminHandler = handler.NewAuthHandler(adminCollection, authClient, ctx)
+
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
+
+	AdminHandler := handler.NewDefaultHandler(adminCollection, ctx)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
@@ -41,7 +49,11 @@ func initializeRoutes(router *gin.Engine) {
 
 	authorized := router.Group("api/v1/")
 
+	adminAuthorized := router.Group("api/v1/admin/")
+
 	authorized.Use(authHandler.AuthMiddleware())
+
+	adminAuthorized.Use(adminHandler.AuthMiddleware())
 
 	{
 		authorized.GET("/ping", UserHandler.Ping)
@@ -49,6 +61,7 @@ func initializeRoutes(router *gin.Engine) {
 		authorized.GET("/users/:id", UserHandler.GetUser)
 		authorized.PUT("/users/:id", UserHandler.UpdateUser)
 		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
+		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 	}
 
 }
