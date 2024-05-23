@@ -17,13 +17,15 @@ func (handler *DefaultHandler) UpdateAdmin(c *gin.Context) {
 
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&admin); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+	uid, _ := c.Get("uid")
+
+	if id != uid {
+		sendError(c, http.StatusUnauthorized, "You are not authorized to this user")
 		return
 	}
 
-	if admin.Uid == "" || admin.UserDisplayName == "" || admin.UserEmail == "" {
-		sendError(c, http.StatusBadRequest, "uid, userDisplayName, and userEmail are required fields")
+	if err := c.ShouldBindJSON(&admin); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -38,6 +40,13 @@ func (handler *DefaultHandler) UpdateAdmin(c *gin.Context) {
 	if len(docs) == 0 {
 		sendError(c, http.StatusNotFound, "User not found")
 		return
+	}
+
+	admin.Uid = existingAdminUser.Uid
+	admin.Id = existingAdminUser.Id
+
+	if admin.UserDisplayName != "" {
+		existingAdminUser.UserDisplayName = admin.UserDisplayName
 	}
 
 	doc := docs[0]
