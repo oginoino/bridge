@@ -13,20 +13,15 @@ func (handler *DefaultHandler) CreateAdmin(c *gin.Context) {
 	var admin models.AdminUser
 	ctx := context.Background()
 
-	if err := c.ShouldBindJSON(&admin); err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if admin.Uid == "" || admin.UserDisplayName == "" || admin.UserEmail == "" || admin.Role == "" {
-		sendError(c, http.StatusBadRequest, "uid, userDisplayName, userEmail, and role are required fields")
-		return
-	}
-
+	uid, _ := c.Get("uid")
+	admin.Uid = uid.(string)
+	admin.UserDisplayName = c.GetString("name")
+	admin.UserEmail = c.GetString("email")
 	admin.Id = admin.Uid
 	admin.CreatedAt = models.CustomTime{Time: time.Now()}
 	admin.UpdatedAt = models.CustomTime{Time: time.Now()}
 	admin.IsActivated = true
+	admin.Role = "admin"
 
 	_, err := dbClient.Collection(handler.collection.ID).Where("uid", "==", admin.Uid).Documents(ctx).Next()
 
