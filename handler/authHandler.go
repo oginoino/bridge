@@ -26,6 +26,8 @@ func (handler *AuthHandler) AuthMiddleware() gin.HandlerFunc {
 
 		c.Set("token", token)
 
+		c.Set("uid", token.UID)
+
 		c.Next()
 	}
 }

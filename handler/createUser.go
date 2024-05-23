@@ -18,11 +18,13 @@ func (handler *DefaultHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if user.Uid == "" || user.UserDisplayName == "" || user.UserEmail == "" {
+	if user.UserDisplayName == "" || user.UserEmail == "" {
 		sendError(c, http.StatusBadRequest, "uid, userDisplayName, and userEmail are required fields")
 		return
 	}
 
+	uid, _ := c.Get("uid")
+	user.Uid = uid.(string)
 	user.Id = user.Uid
 	user.CreatedAt = models.CustomTime{Time: time.Now()}
 	user.UpdatedAt = models.CustomTime{Time: time.Now()}
