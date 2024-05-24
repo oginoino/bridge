@@ -19,17 +19,25 @@ func initializeRoutes(router *gin.Engine) {
 
 	var adminHandler *handler.AuthHandler
 
+	var productHandler *handler.AuthHandler
+
 	userCollection := db.Collection("users")
 
 	adminCollection := db.Collection("admin")
+
+	productCollection := db.Collection("products")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
 	adminHandler = handler.NewAuthHandler(adminCollection, authClient, ctx)
 
+	productHandler = handler.NewAuthHandler(productCollection, authClient, ctx)
+
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
 	AdminHandler := handler.NewDefaultHandler(adminCollection, ctx)
+
+	ProductHandler := handler.NewDefaultHandler(productCollection, ctx)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
@@ -45,15 +53,20 @@ func initializeRoutes(router *gin.Engine) {
 
 	router.Use(cors.New(corsConfig))
 
-	router.GET("/predictions", handler.GetPredictions)
-
 	authorized := router.Group("api/v1/")
 
 	adminAuthorized := router.Group("api/v1/admin/")
 
+	productAuthorized := router.Group("api/v1/products/")
+
 	authorized.Use(authHandler.AuthMiddleware())
 
 	adminAuthorized.Use(adminHandler.AuthMiddleware())
+
+	productAuthorized.Use(productHandler.AuthMiddleware())
+
+	router.GET("api/v1/predictions", handler.GetPredictions)
+	router.GET("api/v1/products/:id", handler.GetProduct)
 
 	{
 		authorized.GET("/ping", UserHandler.Ping)
@@ -61,10 +74,14 @@ func initializeRoutes(router *gin.Engine) {
 		authorized.GET("/users/:id", UserHandler.GetUser)
 		authorized.PUT("/users/:id", UserHandler.UpdateUser)
 		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
-		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 		adminAuthorized.GET("/:id", AdminHandler.GetAdmin)
+		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 		adminAuthorized.PUT("/:id", AdminHandler.UpdateAdmin)
 		adminAuthorized.DELETE("/:id", AdminHandler.DeleteAdmin)
+
+		productAuthorized.POST("/", ProductHandler.CreateProduct)
+		productAuthorized.PUT("/:id", ProductHandler.UpdateProduct)
+		productAuthorized.DELETE("/:id", ProductHandler.DeleteProduct)
 	}
 
 }

@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
+	"github.com/GinoCodeSpace/bridge/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,4 +36,29 @@ func (handler *AuthHandler) AuthMiddleware() gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+func CheckAdminFunction(ctx context.Context, c *gin.Context) bool {
+	uid, _ := c.Get("uid")
+	var admin models.AdminUser
+
+	documentUserSnapShot, err := dbClient.Collection("admin").Where("uid", "==", uid).Documents(ctx).Next()
+
+	if err != nil {
+		sendError(c, http.StatusUnauthorized, "You are not authorized for this")
+		return true
+	}
+
+	documentUserSnapShot.DataTo(&admin)
+
+	if !admin.IsActivated {
+		sendError(c, http.StatusUnauthorized, "You are not authorized for this")
+		return true
+	}
+
+	if admin.Role != "admin" {
+		sendError(c, http.StatusUnauthorized, "You are not authorized for this")
+		return true
+	}
+	return false
 }
