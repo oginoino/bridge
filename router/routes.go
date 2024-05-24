@@ -67,6 +67,7 @@ func initializeRoutes(router *gin.Engine) {
 
 	router.GET("api/v1/predictions", handler.GetPredictions)
 	router.GET("api/v1/products/:id", handler.GetProduct)
+	router.GET("api/v1/products", handler.GetAllProduct)
 
 	{
 		authorized.GET("/ping", UserHandler.Ping)
