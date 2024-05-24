@@ -12,25 +12,9 @@ func (handler *DefaultHandler) CreateProduct(c *gin.Context) {
 	var product models.Product
 	ctx := context.Background()
 
-	uid, _ := c.Get("uid")
-	var admin models.AdminUser
+	isAdmin := CheckAdminFunction(ctx, c)
 
-	documentUserSnapShot, err := dbClient.Collection("admin").Where("uid", "==", uid).Documents(ctx).Next()
-
-	if err != nil {
-		sendError(c, http.StatusUnauthorized, "You are not authorized to create a product")
-		return
-	}
-
-	documentUserSnapShot.DataTo(&admin)
-
-	if !admin.IsActivated {
-		sendError(c, http.StatusUnauthorized, "You are not authorized to create a product")
-		return
-	}
-
-	if admin.Role != "admin" {
-		sendError(c, http.StatusUnauthorized, "You are not authorized to create a product")
+	if isAdmin {
 		return
 	}
 

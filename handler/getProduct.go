@@ -8,12 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (handler *DefaultHandler) GetProduct(c *gin.Context) {
+func GetProduct(c *gin.Context) {
 	id := c.Param("id")
 
 	ctx := context.Background()
 
-	query := dbClient.Collection(handler.collection.ID).Where("id", "==", id).Limit(1)
+	collectionRef := "products"
+
+	query := dbClient.Collection(collectionRef).Where("id", "==", id).Limit(1)
 
 	docs, err := query.Documents(ctx).GetAll()
 

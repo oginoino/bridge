@@ -53,8 +53,6 @@ func initializeRoutes(router *gin.Engine) {
 
 	router.Use(cors.New(corsConfig))
 
-	router.GET("/predictions", handler.GetPredictions)
-
 	authorized := router.Group("api/v1/")
 
 	adminAuthorized := router.Group("api/v1/admin/")
@@ -67,18 +65,21 @@ func initializeRoutes(router *gin.Engine) {
 
 	productAuthorized.Use(productHandler.AuthMiddleware())
 
+	router.GET("api/v1/predictions", handler.GetPredictions)
+	router.GET("api/v1/products/:id", handler.GetProduct)
+
 	{
 		authorized.GET("/ping", UserHandler.Ping)
 		authorized.POST("/users", UserHandler.CreateUser)
 		authorized.GET("/users/:id", UserHandler.GetUser)
 		authorized.PUT("/users/:id", UserHandler.UpdateUser)
 		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
-		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 		adminAuthorized.GET("/:id", AdminHandler.GetAdmin)
+		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 		adminAuthorized.PUT("/:id", AdminHandler.UpdateAdmin)
 		adminAuthorized.DELETE("/:id", AdminHandler.DeleteAdmin)
 		productAuthorized.POST("/", ProductHandler.CreateProduct)
-		productAuthorized.GET("/:id", ProductHandler.GetProduct)
+		productAuthorized.PUT("/:id", ProductHandler.UpdateProduct)
 	}
 
 }
