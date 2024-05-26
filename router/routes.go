@@ -83,6 +83,8 @@ func initializeRoutes(router *gin.Engine) {
 		productAuthorized.POST("/", ProductHandler.CreateProduct)
 		productAuthorized.PUT("/:id", ProductHandler.UpdateProduct)
 		productAuthorized.DELETE("/:id", ProductHandler.DeleteProduct)
+		productAuthorized.PUT("/all", ProductHandler.UpdateMultipleProducts)
+		productAuthorized.POST("/all", ProductHandler.UpdateOrAddMultipleProducts)
 	}
 
 }
