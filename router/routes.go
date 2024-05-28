@@ -21,11 +21,15 @@ func initializeRoutes(router *gin.Engine) {
 
 	var productHandler *handler.AuthHandler
 
+	var cartHandler *handler.AuthHandler
+
 	userCollection := db.Collection("users")
 
 	adminCollection := db.Collection("admin")
 
 	productCollection := db.Collection("products")
+
+	cartCollection := db.Collection("carts")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
@@ -33,11 +37,15 @@ func initializeRoutes(router *gin.Engine) {
 
 	productHandler = handler.NewAuthHandler(productCollection, authClient, ctx)
 
+	cartHandler = handler.NewAuthHandler(cartCollection, authClient, ctx)
+
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
 	AdminHandler := handler.NewDefaultHandler(adminCollection, ctx)
 
 	ProductHandler := handler.NewDefaultHandler(productCollection, ctx)
+
+	CartHandler := handler.NewDefaultHandler(cartCollection, ctx)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
@@ -59,11 +67,15 @@ func initializeRoutes(router *gin.Engine) {
 
 	productAuthorized := router.Group("api/v1/products/")
 
+	cartAuthorized := router.Group("api/v1/carts/")
+
 	authorized.Use(authHandler.AuthMiddleware())
 
 	adminAuthorized.Use(adminHandler.AuthMiddleware())
 
 	productAuthorized.Use(productHandler.AuthMiddleware())
+
+	cartAuthorized.Use(cartHandler.AuthMiddleware())
 
 	router.GET("api/v1/predictions", handler.GetPredictions)
 	router.GET("api/v1/products/:id", handler.GetProduct)
@@ -85,6 +97,9 @@ func initializeRoutes(router *gin.Engine) {
 		productAuthorized.DELETE("/:id", ProductHandler.DeleteProduct)
 		productAuthorized.PUT("/all", ProductHandler.UpdateMultipleProducts)
 		productAuthorized.POST("/all", ProductHandler.UpdateOrAddMultipleProducts)
+
+		cartAuthorized.GET("/", CartHandler.GetCart)
+		cartAuthorized.POST("/", CartHandler.CreateOrUpdateCart)
 	}
 
 }
