@@ -99,7 +99,7 @@ func initializeRoutes(router *gin.Engine) {
 		productAuthorized.POST("/all", ProductHandler.UpdateOrAddMultipleProducts)
 
 		cartAuthorized.GET("/", CartHandler.GetCart)
-		cartAuthorized.POST("/", CartHandler.CreateOrUpdateCart)
+		cartAuthorized.PUT("/", CartHandler.CreateOrUpdateCart)
 	}
 
 }
