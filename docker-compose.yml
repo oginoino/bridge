@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: bridge
+    env_file:
+      - .env
+    volumes:
+      - ./credentials.json:/app/credentials.json
+    ports:
+      - "8080:8080"
+      
