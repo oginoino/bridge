@@ -17,6 +17,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	var authHandler *handler.AuthHandler
 
+	var userHandler *handler.AuthHandler
+
 	var adminHandler *handler.AuthHandler
 
 	var productHandler *handler.AuthHandler
@@ -36,6 +38,8 @@ func initializeRoutes(router *gin.Engine) {
 	checkoutCollection := db.Collection("checkouts")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
+
+	userHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
 	adminHandler = handler.NewAuthHandler(adminCollection, authClient, ctx)
 
@@ -71,6 +75,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	authorized := router.Group("api/v1/")
 
+	userAuthorized := router.Group("api/v1/users/")
+
 	adminAuthorized := router.Group("api/v1/admin/")
 
 	productAuthorized := router.Group("api/v1/products/")
@@ -80,6 +86,8 @@ func initializeRoutes(router *gin.Engine) {
 	checkoutAuthorized := router.Group("api/v1/checkout/")
 
 	authorized.Use(authHandler.AuthMiddleware())
+
+	userAuthorized.Use(userHandler.AuthMiddleware())
 
 	adminAuthorized.Use(adminHandler.AuthMiddleware())
 
@@ -95,10 +103,10 @@ func initializeRoutes(router *gin.Engine) {
 
 	{
 		authorized.GET("/ping", UserHandler.Ping)
-		authorized.POST("/users", UserHandler.CreateUser)
-		authorized.GET("/users/:id", UserHandler.GetUser)
-		authorized.PUT("/users/:id", UserHandler.UpdateUser)
-		authorized.DELETE("/users/:id", UserHandler.DeleteUser)
+		userAuthorized.POST("/", UserHandler.CreateUser)
+		userAuthorized.GET("/:id", UserHandler.GetUser)
+		userAuthorized.PUT("/:id", UserHandler.UpdateUser)
+		userAuthorized.DELETE("/:id", UserHandler.DeleteUser)
 		adminAuthorized.GET("/:id", AdminHandler.GetAdmin)
 		adminAuthorized.POST("/", AdminHandler.CreateAdmin)
 		adminAuthorized.PUT("/:id", AdminHandler.UpdateAdmin)
