@@ -23,6 +23,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	var cartHandler *handler.AuthHandler
 
+	var checkoutHandler *handler.AuthHandler
+
 	userCollection := db.Collection("users")
 
 	adminCollection := db.Collection("admin")
@@ -30,6 +32,8 @@ func initializeRoutes(router *gin.Engine) {
 	productCollection := db.Collection("products")
 
 	cartCollection := db.Collection("carts")
+
+	checkoutCollection := db.Collection("checkouts")
 
 	authHandler = handler.NewAuthHandler(userCollection, authClient, ctx)
 
@@ -39,6 +43,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	cartHandler = handler.NewAuthHandler(cartCollection, authClient, ctx)
 
+	checkoutHandler = handler.NewAuthHandler(checkoutCollection, authClient, ctx)
+
 	UserHandler := handler.NewDefaultHandler(userCollection, ctx)
 
 	AdminHandler := handler.NewDefaultHandler(adminCollection, ctx)
@@ -46,6 +52,8 @@ func initializeRoutes(router *gin.Engine) {
 	ProductHandler := handler.NewDefaultHandler(productCollection, ctx)
 
 	CartHandler := handler.NewDefaultHandler(cartCollection, ctx)
+
+	CheckoutHandler := handler.NewDefaultHandler(checkoutCollection, ctx)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
@@ -69,6 +77,8 @@ func initializeRoutes(router *gin.Engine) {
 
 	cartAuthorized := router.Group("api/v1/carts/")
 
+	checkoutAuthorized := router.Group("api/v1/checkout/")
+
 	authorized.Use(authHandler.AuthMiddleware())
 
 	adminAuthorized.Use(adminHandler.AuthMiddleware())
@@ -76,6 +86,8 @@ func initializeRoutes(router *gin.Engine) {
 	productAuthorized.Use(productHandler.AuthMiddleware())
 
 	cartAuthorized.Use(cartHandler.AuthMiddleware())
+
+	checkoutAuthorized.Use(checkoutHandler.AuthMiddleware())
 
 	router.GET("api/v1/predictions", handler.GetPredictions)
 	router.GET("api/v1/products/:id", handler.GetProduct)
@@ -100,6 +112,9 @@ func initializeRoutes(router *gin.Engine) {
 
 		cartAuthorized.GET("/", CartHandler.GetCart)
 		cartAuthorized.PUT("/", CartHandler.CreateOrUpdateCart)
+
+		checkoutAuthorized.POST("/", CheckoutHandler.CreateCheckout)
+
 	}
 
 }

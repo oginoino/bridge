@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Payment struct {
 	PaymentId     string        `json:"id" firestore:"id"`
 	PaymentMethod PaymentMethod `json:"payment_method" firestore:"payment_method"`
@@ -7,8 +9,8 @@ type Payment struct {
 	Items         Cart          `json:"items" firestore:"items"`
 	Payer         User          `json:"payer" firestore:"payer"`
 	Total         float64       `json:"total" firestore:"total"`
-	CreatedAt     string        `json:"created_at" firestore:"created_at"`
-	UpdatedAt     string        `json:"updated_at" firestore:"updated_at"`
+	CreatedAt     time.Time     `json:"created_at" firestore:"created_at"`
+	UpdatedAt     time.Time     `json:"updated_at" firestore:"updated_at"`
 }
 
 type PaymentMethod struct {
