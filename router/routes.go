@@ -113,6 +113,7 @@ func initializeRoutes(router *gin.Engine) {
 		cartAuthorized.GET("/", CartHandler.GetCart)
 		cartAuthorized.PUT("/", CartHandler.CreateOrUpdateCart)
 
+		checkoutAuthorized.GET("/", CheckoutHandler.GetCheckout)
 		checkoutAuthorized.POST("/", CheckoutHandler.CreateCheckout)
 
 	}
